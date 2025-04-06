@@ -15,3 +15,7 @@ export const products = [
     reviews: [{ id: "r3", rating: 5, comment: "Feels amazing to type!" }],
   },
 ];
+
+export const getAllProducts = () => {
+  return products;
+};

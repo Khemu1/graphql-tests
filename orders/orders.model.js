@@ -28,3 +28,7 @@ export const orders = [
     ],
   },
 ];
+
+export const getAllOrders = () => {
+  return orders;
+};

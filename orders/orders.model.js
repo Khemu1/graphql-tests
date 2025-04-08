@@ -32,3 +32,8 @@ export const orders = [
 export const getAllOrders = () => {
   return orders;
 };
+
+export const insertOrder = (order) => {
+  orders.push(order);
+  return order;
+};

@@ -1,4 +1,4 @@
-import { getAllOrders } from "./orders.model.js";
+import { getAllOrders, insertOrder } from "./orders.model.js";
 
 export default {
   Query: {
@@ -14,6 +14,13 @@ export default {
         console.error("Error fetching orders:", error);
         throw error;
       }
+    },
+  },
+  Mutation: {
+    addOrder: (_, args) => {
+      const newOrder = args;
+      console.log("new order recvied, ",newOrder)
+      return insertOrder(newOrder);
     },
   },
 };

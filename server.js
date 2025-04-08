@@ -1,7 +1,7 @@
 import express from "express";
 import http from "node:http";
 import { graphqlHTTP } from "express-graphql";
-import { makeExecutableSchema, chainResolvers } from "@graphql-tools/schema";
+import { makeExecutableSchema } from "@graphql-tools/schema";
 import { loadFilesSync } from "@graphql-tools/load-files";
 import path, { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -30,7 +30,7 @@ app.use(
     customFormatErrorFn: (error) => ({
       message: error.message,
       locations: error.locations,
-      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+      stack: error.stack,
     }),
   })
 );

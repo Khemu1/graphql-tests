@@ -1,12 +1,20 @@
 type Query {
   products: [Product]
+  productsByPrice(min: Float!, max: Float!): [Product]
+  productById(id: ID!): Product # don't forget to add the query
+}
+
+# mutations are used to modify/ add data
+type Mutation {
+  addProduct(id: ID!, description: String!, price: Float!): Product # by doing :Product i will return the added product
+  addNewProductReview(productId:ID!,id: ID!, rating: Int!, comment: String): Review # by doing :Review i will return the added review
 }
 
 type Product {
   id: ID!
   description: String!
   price: Float!
-  reviews: [Review!]!
+  reviews: [Review]
 }
 
 type Review {

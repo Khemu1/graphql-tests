@@ -2,13 +2,19 @@ type Query {
   orders: [Order]
 }
 
+type Mutation {
+  addOrder(productId: ID!, quantity: Int!): Order
+  # updateOrder(id: ID!, quantity: Int!): Order
+  # deleteOrder(id: ID!): Boolean
+}
+
 type Order {
   id: ID!
   product: Product!
   quantity: Int!
   date: String!
   subtotal: Float!
-  items: [OrderItem!]!
+  items: [OrderItem]!
 }
 
 type OrderItem {

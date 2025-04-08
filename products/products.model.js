@@ -19,3 +19,31 @@ export const products = [
 export const getAllProducts = () => {
   return products;
 };
+
+export const getProductPrice = (min, max) => {
+  return products.filter(
+    (product) => product.price >= min && product.price <= max
+  );
+};
+export const getProductById = (id) => {
+  return products.find((product) => product.id === id);
+};
+
+export const insertProduct = (id, description, price) => {
+  const newProduct = {
+    id,
+    description,
+    price,
+    reviews: [],
+  };
+  products.push(newProduct);
+  return newProduct;
+};
+export const inertNewReview = (productId, review) => {
+  const product = products.find((product) => product.id === productId);
+  if (product) {
+    product.reviews.push(review);
+    return review;
+  }
+  return null;
+};

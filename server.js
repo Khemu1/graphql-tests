@@ -1,6 +1,6 @@
 import express from "express";
 import http from "node:http";
-import { graphqlHTTP } from "express-graphql";
+import { ApolloServer } from "apollo-server-express";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { loadFilesSync } from "@graphql-tools/load-files";
 import path, { dirname } from "node:path";
@@ -12,46 +12,49 @@ const __dirname = dirname(__filename);
 const typeDefs = loadFilesSync(path.join(__dirname, "**/*.graphql"));
 const resolversArray = loadFilesSync(path.join(__dirname, "**/*.resolvers.js"));
 
-const schema = makeExecutableSchema({
-  typeDefs,
-  resolvers: [...resolversArray],
-});
+const startApolloServer = async () => {
+  const app = express();
 
-const app = express();
-const server = http.createServer(app);
+  const schema = makeExecutableSchema({
+    typeDefs,
+    resolvers: [...resolversArray],
+  });
 
-app.use(express.json());
-
-app.use(
-  "/graphql",
-  graphqlHTTP({
+  const apolloServer = new ApolloServer({
     schema,
-    graphiql: true,
-    customFormatErrorFn: (error) => ({
+    playground: true, 
+    formatError: (error) => ({
       message: error.message,
       locations: error.locations,
       stack: error.stack,
     }),
-  })
-);
-
-app.get("/", (req, res) => {
-  res.json({
-    status: "running",
-    graphqlEndpoint: "/graphql",
-    timestamp: new Date().toISOString(),
   });
-});
 
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: "Internal Server Error" });
-});
+  await apolloServer.start();
+  apolloServer.applyMiddleware({ app, path: "/graphql" });
 
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-  console.log(
-    `graphQL playground available at http://localhost:${PORT}/graphql`
-  );
-});
+  const server = http.createServer(app);
+
+  app.get("/", (req, res) => {
+    res.json({
+      status: "running",
+      graphqlEndpoint: "/graphql",
+      timestamp: new Date().toISOString(),
+    });
+  });
+
+  app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ error: "Internal Server Error" });
+  });
+
+  const PORT = process.env.PORT || 3000;
+  server.listen(PORT, () => {
+    console.log(`server running on http://localhost:${PORT}`);
+    console.log(
+      `graphQL Playground available at http://localhost:${PORT}/graphql`
+    );
+  });
+};
+
+startApolloServer();
